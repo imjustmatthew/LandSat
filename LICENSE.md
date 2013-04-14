@@ -4,7 +4,7 @@ The complete copy of the license is attached to this document.
 ------
 SUMMARY:
 
-    LandSat  Copyright (C) 2013
+    LandSat  Copyright (C) 2013 Ormi & Matthew Roy (imjustmatthew)
     Based on: MechJeb2  Copyright (C) 2013
     With Code From: ISA Map_Sat Copyright (C) 2013
     This program comes with ABSOLUTELY NO WARRANTY!
