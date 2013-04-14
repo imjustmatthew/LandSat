@@ -182,6 +182,7 @@ namespace LandSat
 				try 
 				{
 					bodyLatData.Add(datum.getLongitude(),datum);
+					Debug.Log ("LandSat stored elevation "+datum.getElevation()+" for coordinates "+datum.getLatitude()+", "+datum.getLongitude());
 				} catch (ArgumentException) 
 				{
 					//TODO: check why this is hit once per cycle, does the collection code double-up somewhere?
@@ -190,12 +191,72 @@ namespace LandSat
 			}
 		}
 
+		//we use a separate cache for read operations since we might be rendering a different body than we're orbiting.
+		private SortedDictionary<double, SortedDictionary<double, Datum>> lastBodyDataReadCache;
+		private String lastBodyDataReadCacheName = "";
 
 		//returns the average of all data in a range of latitudes and longitudes
-		// should probably use Where see: http://msdn.microsoft.com/en-us/library/bb534803.aspx
+		// should probably use Where, see: http://msdn.microsoft.com/en-us/library/bb534803.aspx
+		// ASSUMES lat1 > lat2 and long1 < long2 (space is defined from TopLeft to BottomRight on mercator projection)
+		// ASSUMES that no poles are crossed.
+		// RETURNs value which will be negative in oceans, and will be Douable.NaN if there is no data.
 		public double getAverageElevation (String target, double latitude1, double latitude2, double longitude1, double longitude2)
 		{
-			return 0d;
+			//get the body's dataset
+			SortedDictionary<double, SortedDictionary<double, Datum>> bodyData;
+			if (lastBodyDataReadCacheName.Equals(target)) 
+		    {
+				bodyData = lastBodyDataReadCache;
+			} else {
+				if (!data.TryGetValue(target, out bodyData))
+				{
+					Debug.Log("LandSat no data for body named '"+target+"'"); //TODO remove before using threads!!!
+					return Double.NaN;
+		        }
+				lastBodyDataReadCache = bodyData;
+				lastBodyDataReadCacheName = target;
+			}
+			long count = 0;
+			double sum = 0;
+			IEnumerable<KeyValuePair<double,SortedDictionary<double, Datum>>> latQuery 
+				= bodyData.Where(keypair => ((keypair.Key >= latitude2) && (keypair.Key <= latitude1)));
+			foreach (KeyValuePair<double,SortedDictionary<double, Datum>> bodyLatDataKP in latQuery) {
+				IEnumerable<KeyValuePair<double, Datum>> longQuery 
+					= bodyLatDataKP.Value.Where(keypair => ((keypair.Key >= longitude1) && (keypair.Key <= longitude2)));
+				foreach (KeyValuePair<double, Datum> datumKP in longQuery) {
+					count++;
+					sum += datumKP.Value.getElevation();
+				}
+			}
+			//next two lines are for debugging only
+			double avg = Double.NaN;
+			if (count >0) avg = sum/count;
+			Debug.Log("LandSat measured an elevation of "+avg+" based on "+count+" points between "+latitude1+", "+longitude1+" and "+latitude2+", "+longitude2); //TODO remove before using threads!!!
+			if (count<0) Debug.Log("LandSat WARNING how can a count be negative?"); //TODO remove before using threads!!!
+			if (count==0) return Double.NaN;
+			return sum/count;
+		}
+
+		//This method wraps getAverageElevation and tries to flip coordinates, 
+		// but is not well tested will probably break sometimes, 
+		// I would only use it for testing or really think about the edge cases and test them.
+		public double getAverageElevationWithFlip (String target, double latitude1, double latitude2, double longitude1, double longitude2)
+		{
+			double flippedLat1 = latitude1;
+			double flippedLat2 = latitude2;
+			double flippedLong1 = longitude1;
+			double flippedLong2 = longitude2;
+			if (latitude1 < latitude2) {
+				flippedLat1 = latitude2;
+				flippedLat2 = latitude1;
+			}
+			if (longitude1 < longitude2) {
+				flippedLong1 = longitude2;
+				flippedLong2 = longitude1;
+			}
+
+			return getAverageElevation(target, flippedLat1, flippedLat2, flippedLong1, flippedLong2);
+
 		}
 
 
@@ -220,8 +281,10 @@ namespace LandSat
 		//returns a writable deep copy and freezes this copy for writing
 		public LandSatDataStore deepCopyAndFreeze ()
 		{
-			LandSatDataStore copy = deepCopy();
 			isFrozen = true;
+			LandSatDataStore copy = deepCopy();
+			copy.isFrozen = false;
+			copy.isReadOnly = false;
 			return copy;
 		}
 
@@ -256,6 +319,22 @@ namespace LandSat
 				foreach (KeyValuePair<double,SortedDictionary<double, Datum>> bodyLatDataKP in bodyDataKP.Value) {
 					ret += bodyLatDataKP.Value.LongCount();
 				}
+			}
+			return ret;
+		}
+
+		//returns the count of all data elements for a single body
+		// could be useful for deciding what mapping resolution to use.
+		public long getCountForBody (String target)
+		{
+			SortedDictionary<double, SortedDictionary<double, Datum>> bodyData;
+			if (!data.TryGetValue(target, out bodyData))
+			{
+				return 0;
+	        }
+			long ret = 0;
+			foreach (KeyValuePair<double,SortedDictionary<double, Datum>> bodyLatDataKP in bodyData) {
+				ret += bodyLatDataKP.Value.LongCount();
 			}
 			return ret;
 		}
