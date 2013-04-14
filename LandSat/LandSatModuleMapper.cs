@@ -71,10 +71,10 @@ namespace LandSat
 			
 			double lat = vessel.mainBody.GetLatitude(pos);
 			double lon = vessel.mainBody.GetLongitude(pos);
-			double artScanAreaLon1;
-			double artScanAreaLon2;
-			double artScanAreaLat1;
-			double artScanAreaLat2;
+			double artScanAreaLon1=1d;
+			double artScanAreaLon2=2d;
+			double artScanAreaLat1=1d;
+			double artScanAreaLat2=-1d;
 
 			while (line <= 20000d)
 			{
@@ -135,7 +135,9 @@ namespace LandSat
 			//
 			// End code from ISA_LandSat by Innsewerants 
 			//
-
+			Debug.Log ("LandSat measured the area "+artScanAreaLat1+", "+artScanAreaLon1+" to "+artScanAreaLat2+", "+artScanAreaLon2);
+			double localElevationAverage = core.datastore.getAverageElevation(vessel.mainBody.GetName(),artScanAreaLat1,artScanAreaLat2,artScanAreaLon1,artScanAreaLon2);
+			Debug.Log ("LandSat measured an average elevation of "+localElevationAverage+" in this area.");
 		}
 
 		//
