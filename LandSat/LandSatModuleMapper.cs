@@ -44,7 +44,7 @@ namespace LandSat
 				lastPruneTime = Time.time;
 				measurementsSincePrune = 0;
                 //TODO spawn worker to prune the data store
-				Debug.Log("LandSat is starting a prune job.");
+				Debug.Log("LandSat is starting a prune job. DataStore has "+core.datastore.getCount()+" datums");
             }
 		}
 
