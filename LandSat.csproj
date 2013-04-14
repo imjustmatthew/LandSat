@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>10.0.0</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{12CF7D57-84B2-4D92-8547-89D3AC71A932}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <RootNamespace>LandSat</RootNamespace>
+    <AssemblyName>LandSat</AssemblyName>
+    <BaseDirectory>LandSat</BaseDirectory>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug</OutputPath>
+    <DefineConstants>DEBUG;</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <ConsolePause>false</ConsolePause>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>none</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release</OutputPath>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <ConsolePause>false</ConsolePause>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="Assembly-CSharp">
+      <HintPath>..\..\bin\KSP_linux\KSP_Data\Managed\Assembly-CSharp.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine">
+      <HintPath>..\..\bin\KSP_linux\KSP_Data\Managed\UnityEngine.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Core" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="AssemblyInfo.cs" />
+    <Compile Include="LandSat\LandSatCore.cs" />
+    <Compile Include="LandSat\VesselState.cs" />
+    <Compile Include="LandSat\VesselExtensions.cs" />
+    <Compile Include="LandSat\Vector6.cs" />
+    <Compile Include="LandSat\SpeechBubble.cs" />
+    <Compile Include="LandSat\ReentrySimulation.cs" />
+    <Compile Include="LandSat\PartExtensions.cs" />
+    <Compile Include="LandSat\OrbitExtensions.cs" />
+    <Compile Include="LandSat\MuUtils.cs" />
+    <Compile Include="LandSat\MechJebModuleWarpHelper.cs" />
+    <Compile Include="LandSat\MechJebModuleWarpController.cs" />
+    <Compile Include="LandSat\MathExtensions.cs" />
+    <Compile Include="LandSat\GuiUtils.cs" />
+    <Compile Include="LandSat\GLUtils.cs" />
+    <Compile Include="LandSat\DisplayModule.cs" />
+    <Compile Include="LandSat\ComputerModule.cs" />
+    <Compile Include="LandSat\CelestialBodyExtensions.cs" />
+    <Compile Include="LandSat\LandSatModuleMapper.cs" />
+    <Compile Include="LandSat\LandSatDataStore.cs" />
+    <Compile Include="LandSat\LandSatModuleViewer.cs" />
+    <Compile Include="LandSat\LandSatSensor.cs" />
+    <Compile Include="LandSat\LandSatModuleMenu.cs" />
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+</Project>

@@ -1,4 +1,3 @@
-MechJeb2
+LandSat
 
-MechJeb2 - KSP mod
-Visit http://mechjeb.com for more info
+LandSat - KSP mod

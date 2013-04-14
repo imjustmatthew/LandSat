@@ -1,0 +1,33 @@
+﻿<Properties>
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
+  <MonoDevelop.Ide.Workbench ActiveDocument="AssemblyInfo.cs">
+    <Files>
+      <File FileName="LandSat/LandSatDataStore.cs" Line="58" Column="16" />
+      <File FileName="LandSat/LandSatModuleMapper.cs" Line="38" Column="60" />
+      <File FileName="LandSat/LandSatModuleViewer.cs" Line="24" Column="3" />
+      <File FileName="LandSat/LandSatCore.cs" Line="44" Column="3" />
+      <File FileName="LandSat/LandSatSensor.cs" Line="11" Column="25" />
+      <File FileName="LandSat/MechJebModuleWarpHelper.cs" Line="105" Column="8" />
+      <File FileName="LandSat/MechJebModuleWarpController.cs" Line="17" Column="39" />
+      <File FileName="AssemblyInfo.cs" Line="11" Column="32" />
+    </Files>
+    <Pads>
+      <Pad Id="ProjectPad">
+        <State expanded="True">
+          <Node name="LandSat" expanded="True" selected="True">
+            <Node name="References" expanded="True" />
+          </Node>
+        </State>
+      </Pad>
+      <Pad Id="ClassPad">
+        <State expanded="True" selected="True" />
+      </Pad>
+    </Pads>
+  </MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.DebuggingService.Breakpoints>
+    <BreakpointStore>
+      <Breakpoint file="/home/matthew/git/LandSat/LandSat/LandSatModuleViewer.cs" line="27" />
+    </BreakpointStore>
+  </MonoDevelop.Ide.DebuggingService.Breakpoints>
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
+</Properties>
