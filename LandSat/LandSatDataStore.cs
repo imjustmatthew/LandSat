@@ -12,6 +12,13 @@ namespace LandSat
 		{
 		}
 
+		//create a new instance with an existing data set
+		public LandSatDataStore (SortedDictionary<String, SortedDictionary<double,SortedDictionary<double,Datum>>> data)
+		{
+			this.data = data;
+			this.isReadOnly = true;
+		}
+
 		private bool isReadOnly = false;
 		private bool isFrozen = false;
 
@@ -261,21 +268,58 @@ namespace LandSat
 
 
 		//returns a thread-safe deep copy marked as read-only
+		//NOTE: We don't clone the Datums since they should be read-only.
 		public LandSatDataStore deepCopy()
 		{
-			return null;
+			//create destination for the body dictionaries
+			SortedDictionary<String, SortedDictionary<double,SortedDictionary<double,Datum>>> copiedData 
+				= new SortedDictionary<String, SortedDictionary<double,SortedDictionary<double,Datum>>>();
+			//iterate over the body dictionaries
+			foreach (KeyValuePair<String,SortedDictionary<double, SortedDictionary<double, Datum>>> bodyDataKP in data) {
+				//create destination for the latitude dictionaries 
+				SortedDictionary<double,SortedDictionary<double,Datum>> bodyDataCopy = new SortedDictionary<double,SortedDictionary<double,Datum>>();
+				//iterate over the latitude dictionaries
+				foreach (KeyValuePair<double,SortedDictionary<double, Datum>> bodyLatDataKP in bodyDataKP.Value) {
+					//clone the latitude dictionary
+					SortedDictionary<double, Datum> bodyLatDataCopy = new SortedDictionary<double, Datum>(bodyLatDataKP.Value);
+					//add the clone
+					bodyDataCopy.Add(bodyLatDataKP.Key, bodyLatDataCopy);
+				}
+				//add the latitude dictionaries
+				copiedData.Add(bodyDataKP.Key, bodyDataCopy);
+			}
+			return new LandSatDataStore(copiedData);
 		}
 
 		//returns a thread-safe deep copy of the data for a single CelestialBody marked as read-only
 		public LandSatDataStore deepCopy(CelestialBody target)
 		{
-			return null;
+			return deepCopy(target.GetName());
 		}
 
 		//returns a thread-safe deep copy of the data for a single CelestialBody, identified by name, marked as read-only
-		public LandSatDataStore deepCopy(String targetname)
+		//NOTE: We don't clone the Datums since they should be read-only.
+		public LandSatDataStore deepCopy (String targetname)
 		{
-			return null;
+			//create destination for the body dictionary
+			SortedDictionary<String, SortedDictionary<double,SortedDictionary<double,Datum>>> copiedData 
+				= new SortedDictionary<String, SortedDictionary<double,SortedDictionary<double,Datum>>> ();
+			try {
+				//create destination for the latitude dictionaries 
+				SortedDictionary<double,SortedDictionary<double,Datum>> bodyDataCopy = new SortedDictionary<double,SortedDictionary<double,Datum>> ();
+				//iterate over the latitude dictionaries
+				foreach (KeyValuePair<double,SortedDictionary<double, Datum>> bodyLatDataKP in data[targetname]) {
+					//clone the latitude dictionary
+					SortedDictionary<double, Datum> bodyLatDataCopy = new SortedDictionary<double, Datum> (bodyLatDataKP.Value);
+					//add the clone
+					bodyDataCopy.Add (bodyLatDataKP.Key, bodyLatDataCopy);
+				}
+				//add the latitude dictionaries
+				copiedData.Add (targetname, bodyDataCopy);
+			} catch (ArgumentException) {
+				Debug.Log("LandSat no data for body named '"+targetname+"'; returned copy will be empty."); 
+			}
+			return new LandSatDataStore(copiedData);
 		}
 
 		//returns a writable deep copy and freezes this copy for writing
