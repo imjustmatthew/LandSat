@@ -76,6 +76,9 @@ namespace LandSat
 			double artScanAreaLat1=1d;
 			double artScanAreaLat2=-1d;
 
+			//imjustmatthew: this scans in a rectange, but it would be interesting to make it scan in a circle.
+			//imjustmatthew: it would also be interesting to make the beam width controllable; 
+			//	i.e. allow a choice between tight and wide with a fixed number of scan points inside the resultant conic.
 			while (line <= 20000d)
 			{
 				double row = -20000d;
@@ -111,11 +114,11 @@ namespace LandSat
 
 					Vector3d rad = QuaternionD.AngleAxis(coordFixed[0], Vector3d.down)*QuaternionD.AngleAxis(coordFixed[1], Vector3d.forward)*Vector3d.right;
 					double elev = vessel.mainBody.pqsController.GetSurfaceHeight(rad) - radius;
-					//The 2 lines were added by imjustmatthew:
+					//The 2 lines below were added by imjustmatthew:
 					//Debug.Log("LandSat measured:"+elev);
 					core.datastore.storeData(vessel.mainBody,coordNormalized[0],coordNormalized[1],elev);
 
-					//imjustmatthew: These record the maximu extents of the scan rectangle so that the ISA code can later look for artifacts.
+					//imjustmatthew: These record the maximum extents of the scan rectangle so that the ISA code can later look for artifacts.
 					if(line == 20000d && row == -20000)
 					{
 						artScanAreaLat1 = coordFixed[1];
@@ -130,11 +133,10 @@ namespace LandSat
 				}
 				line = line+5000d;
 			}
-
-
 			//
 			// End code from ISA_LandSat by Innsewerants 
 			//
+
 			Debug.Log ("LandSat measured the area "+artScanAreaLat1+", "+artScanAreaLon1+" to "+artScanAreaLat2+", "+artScanAreaLon2);
 			double localElevationAverage = core.datastore.getAverageElevation(vessel.mainBody.GetName(),artScanAreaLat1,artScanAreaLat2,artScanAreaLon1,artScanAreaLon2);
 			Debug.Log ("LandSat measured an average elevation of "+localElevationAverage+" in this area.");
